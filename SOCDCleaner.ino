@@ -1,12 +1,14 @@
-const uint8_t leftIN = 26;
-const uint8_t rightIN = 24;
-const uint8_t upIN = 22;
-const uint8_t downIN = 28;
+//Controller button pins
+const uint8_t leftIN = 9;
+const uint8_t rightIN = 10;
+const uint8_t upIN = 11;
+const uint8_t downIN = 12;
 
-const uint8_t leftOUT = 42;
-const uint8_t rightOUT = 38;
-const uint8_t upOUT = 44;
-const uint8_t downOUT = 40;
+//Output to other PCB pins
+const uint8_t leftOUT = 6;
+const uint8_t rightOUT = 8;
+const uint8_t upOUT = 5;
+const uint8_t downOUT = 7;
 
 uint8_t leftRead;
 uint8_t downRead;
@@ -22,7 +24,6 @@ void setup() {
   pinMode(rightOUT, OUTPUT);
   pinMode(downOUT, OUTPUT);
   pinMode(upOUT, OUTPUT);
-  Serial.begin(9600);
 }
 
 void loop() {
@@ -30,49 +31,45 @@ void loop() {
   rightRead = digitalRead(rightIN);
   upRead = digitalRead(upIN);
   downRead = digitalRead(downIN);
-
+  
+  //**********Horizontal inputs block**********
   if (leftRead == LOW)
   {
-    if (rightRead == HIGH)
+    if (rightRead == HIGH) //Left only
     {
-      Serial.println("Lewo");
       digitalWrite(rightOUT, HIGH);
       digitalWrite(leftOUT, LOW);
     }
-    else
+    else //Right+Left = Neutral
     {
       digitalWrite(rightOUT, HIGH);
       digitalWrite(leftOUT, HIGH);
-      Serial.println("Neutral");
     }
   }
-  else if (rightRead == LOW)
+  else if (rightRead == LOW) //Right only
   {
-    Serial.println("Prawo");
     digitalWrite(leftOUT, HIGH);
     digitalWrite(rightOUT, LOW);
   }
-  else
+  else  // No horizontal inputs
   {
     digitalWrite(rightOUT, HIGH);
     digitalWrite(leftOUT, HIGH);
   }
-
-  if (upRead == LOW)
+//**********Vertical inputs block**********
+  if (upRead == LOW) // Up overrides down inputs
   {
-    Serial.println("Gora");
     digitalWrite(downOUT, HIGH);
     digitalWrite(upOUT, LOW);
   }
-  else if (downRead == LOW)
+  else if (downRead == LOW) // Down only
   {
     {
-      Serial.println("DOL");
       digitalWrite(downOUT, LOW);
       digitalWrite(upOUT, HIGH);
     }
   }
-  else
+  else  // No vertical inputs
   {
     digitalWrite(upOUT, HIGH);
     digitalWrite(downOUT, HIGH);
